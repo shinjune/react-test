@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import * as firebase from 'firebase';
 
 export default class BBS extends Component {
+  state = {
+    page: 'login'
+  }
   componentDidMount() {
     const config = {
       apiKey: "AIzaSyC5bvpoKyfa3qwTxhSt0PxgQZI2dI3QbZc",
