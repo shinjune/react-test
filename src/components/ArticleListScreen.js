@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import * as firebase from 'firebase'
 
-export default class LoginScreen extends Component {
+export default class ArticleListScreen extends Component {
   handleLoginClick = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function (result) {
