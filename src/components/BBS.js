@@ -3,6 +3,7 @@ import * as firebase from 'firebase';
 import LoginScreen from './LoginScreen.js';
 import ArticleListScreen from './ArticleListScreen.js';
 import AccountScreen from './AccountScreen.js'
+import ArticleScreen from './ArticleScreen.js'
 
 console.log(ArticleListScreen);
 
@@ -105,8 +106,26 @@ this.setState({
   }
 }
 
+viewArticle = async articleId => {
+  // alert(articleId);
+  const [articleSnapshot, contentsSnapshot] = await Promise.all([
+    firebase.database().ref(`articles/${articleId}`).once('value'),
+    firebase.database().ref(`contents/${articleId}`).once('value')
+  ]);
+  const article = articleSnapshot.val();
+  const contents = contentsSnapshot.val();
+  this.setState({
+    currentArticle: {
+      ...article,
+      contents
+    },
+    page: 'article'
+  })
+}
+//articleId를 인자로 받아서 상태를 update 해주는 함수를 만들자
+
   render() {
-    const {nickName, uid, articles} = this.state;
+    const {nickName, uid, articles, currentArticle} = this.state;
     //속성을 빼오고 싶을 때는 render함수 아래에 분해대입 하자!
     return (
       <div>
@@ -116,6 +135,7 @@ this.setState({
           : this.state.page === 'list'
           ? <ArticleListScreen
           onNickNameClick={this.pageToAccount}
+          onArticleClick={this.viewArticle}
           nickName={nickName || uid}
           // 위를 보면 NavBar로 다시 정보를 넘긴다
           //uid로 넘겨주던 prop을 nickName으로 변경. nickName 있으면 쓰고 없으면 uid
@@ -125,8 +145,10 @@ this.setState({
               onNickNameClick={this.pageToAccount}
               nickName={nickName || uid}
               onNickNameSubmit={this.saveNickName}/>
+          :this.state.page === 'article'
+          ?<ArticleScreen {...currentArticle}/>
           :null
-}
+          }
       </div>
     )
   }
