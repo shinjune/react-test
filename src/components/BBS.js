@@ -40,6 +40,7 @@ export default class BBS extends Component {
           nickName: snapshot.val()
         });
         // User is signed in.
+        this.fetchArticles();
       } else {
         this.setState({
           page: 'login'
@@ -62,9 +63,50 @@ saveNickName = async nickName => {
 // firebase에 저장하고 잘 저장이 되면 화면에 보여주는 method를 만들자
 // 실제 event 객체를 다루는건 handleSubmit이 하도록 하자. why? 역할과 책임을 고려. 유지보수 편리하다
 
+fetchArticles = async () => {
+
+  const snapshot = await firebase.database().ref(`articles`).once('value');
+  const articlesObj = snapshot.val()
+  if (articlesObj == null) {
+    this.setState({
+      articles: null
+    });
+
+  } else {
+    const articles = Object.entries(articlesObj).map(([articleId, articleItem]) => {
+      return {
+        ...articleItem,
+        articleId
+  }
+});
+// const uidArr = articles.map(({uid}) => uid)  중복값을 쓰지 않는 set으로 바꿔보자
+const uidSet = new Set(articles.map(({uid})=> uid))
+const uidObj = {};
+const ps = Array.from(uidSet).map(async uid => {
+  const snapshot = await firebase.database().ref(`users/${uid}/nickName`).once('value');
+  const nickName = snapshot.val();
+  return [uid, nickName];
+})
+const pairArr = await Promise.all(ps);
+for (const [uid, nickName] of pairArr) {
+  uidObj[uid] = nickName;
+}
+// for (const uid of uidArr) {
+//   const nickNameSnapshot = await firebase.database().ref(`users/${uid}/nickName`).once('value');
+//   const nickName = nickNameSnapshot.val();
+//   uidObj[uid] = nickName;
+// }
+articles.forEach(article => {
+  article.author = uidObj[article.uid];
+});
+this.setState({
+  articles
+});
+  }
+}
 
   render() {
-    const {nickName, uid} = this.state;
+    const {nickName, uid, articles} = this.state;
     //속성을 빼오고 싶을 때는 render함수 아래에 분해대입 하자!
     return (
       <div>
@@ -74,9 +116,10 @@ saveNickName = async nickName => {
           : this.state.page === 'list'
           ? <ArticleListScreen
           onNickNameClick={this.pageToAccount}
-          nickName={nickName || uid}/>
+          nickName={nickName || uid}
           // 위를 보면 NavBar로 다시 정보를 넘긴다
           //uid로 넘겨주던 prop을 nickName으로 변경. nickName 있으면 쓰고 없으면 uid
+          articleArr={articles}/>
           : this.state.page === 'account'
           ? <AccountScreen
               onNickNameClick={this.pageToAccount}

@@ -3,20 +3,20 @@ import {Table} from 'semantic-ui-react';
 import NavBar from './NavBar';
 import styled from 'styled-components';
 
-const mockData = [
-  {
-    articleId: '-LB1',
-    author: 'LPS',
-    title: '왜 영어를 반드시 잘 해야하는지',
-    createdAt: '2018-01-01'
-  },
-  {
-    articleId: '-LB2',
-    author: 'LPS',
-    title: '왜 코딩교육이 필요한지',
-    createdAt: '2018-01-01'
-  }
-]
+// const mockData = [
+//   {
+//     articleId: '-LB1',
+//     author: 'LPS',
+//     title: '왜 영어를 반드시 잘 해야하는지',
+//     createdAt: '2018-01-01'
+//   },
+//   {
+//     articleId: '-LB2',
+//     author: 'LPS',
+//     title: '왜 코딩교육이 필요한지',
+//     createdAt: '2018-01-01'
+//   }
+// ]
 
 const ArticleItemRow = styled(Table.Row)`
 &:hover {
@@ -24,7 +24,7 @@ const ArticleItemRow = styled(Table.Row)`
   background-color: skyblue;
 }
 `;
-//&: 의사선택자
+// &: 의사선택자
 
 
 export default class ArticleListScreen extends Component {
@@ -46,8 +46,7 @@ export default class ArticleListScreen extends Component {
        <Table.Body>
          {
            Array.isArray(articleArr) && articleArr.length > 0
-           ?
-           mockData.map(({articleId, title, author, createdAt}) => (
+           ?articleArr.map(({articleId, title, author, createdAt}) => (
              <ArticleItemRow key={articleId}>
               <Table.Cell>{author}</Table.Cell>
               <Table.Cell>{title}</Table.Cell>
