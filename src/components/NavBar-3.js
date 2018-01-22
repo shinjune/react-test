@@ -34,7 +34,7 @@ export default class NavBar extends Component {
     this.props.onNickNameClick()
   }
   render() {
-    const {nickName} = this.props;
+    const { nickName } = this.props;
     return (
       <Wrap>
         <InnerLeft>BBS</InnerLeft>

@@ -34,12 +34,11 @@ export default class NavBar extends Component {
     this.props.onNickNameClick()
   }
   render() {
-    const {nickName} = this.props;
     return (
       <Wrap>
         <InnerLeft>BBS</InnerLeft>
         <LogOutButton onClick={this.handleLogoutClick}>Logout</LogOutButton>
-        <NickName onClick={this.handleNickNameClick}>{nickName}</NickName>
+        <NickName onClick={this.handleNickNameClick}>{this.props.uid}</NickName>
       </Wrap>
     )
   }
